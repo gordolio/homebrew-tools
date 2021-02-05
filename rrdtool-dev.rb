@@ -1,3 +1,6 @@
+# typed: false
+# frozen_string_literal: true
+
 class RrdtoolDev < Formula
   desc "Round Robin Database - with dev headers"
   homepage "https://oss.oetiker.ch/rrdtool/index.en.html"
@@ -43,8 +46,8 @@ class RrdtoolDev < Formula
 
   test do
     system "#{bin}/rrdtool", "create", "temperature.rrd", "--step", "300",
-      "DS:temp:GAUGE:600:-273:5000", "RRA:AVERAGE:0.5:1:1200",
-      "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400", "RRA:AVERAGE:0.5:12:2400"
+           "DS:temp:GAUGE:600:-273:5000", "RRA:AVERAGE:0.5:1:1200",
+           "RRA:MIN:0.5:12:2400", "RRA:MAX:0.5:12:2400", "RRA:AVERAGE:0.5:12:2400"
     system "#{bin}/rrdtool", "dump", "temperature.rrd"
   end
 end
