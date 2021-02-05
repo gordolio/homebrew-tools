@@ -38,9 +38,7 @@ class RrdtoolDev < Formula
     system "./configure", *args
 
     # Needed to build proper Ruby bundle
-    if MacOS.prefer_64_bit?
-      ENV["ARCHFLAGS"] = "-arch x86_64"
-    end
+    ENV["ARCHFLAGS"] = "-arch #{Hardware::CPU.arch_64_bit}"
 
     system "make", "CC=#{ENV.cc}", "CXX=#{ENV.cxx}", "install"
     prefix.install "bindings/ruby/test.rb"
