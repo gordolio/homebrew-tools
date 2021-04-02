@@ -57,7 +57,7 @@ class ElasticsearchAT6Gordolio < Formula
         new_link = "elasticsearch6#{$1}"
       end
       symlink = Hash.new
-      symlink[(libexec/"bin"/f)] = libexec/"bin"/new_link
+      symlink[(libexec/"bin"/f)] = new_link
 
       bin.install_symlink(symlink)
 
