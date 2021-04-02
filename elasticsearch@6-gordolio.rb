@@ -49,11 +49,22 @@ class ElasticsearchAT6Gordolio < Formula
     (etc/"elasticsearch6").install Dir[libexec/"config/*"]
     (libexec/"config").rmtree
 
-    bin.install libexec/"bin/elasticsearch6",
-                libexec/"bin/elasticsearch6-keystore",
-                libexec/"bin/elasticsearch6-plugin",
-                libexec/"bin/elasticsearch6-translog"
-    bin.env_script_all_files(libexec/"bin", Language::Java.java_home_env("1.8"))
+    Dir.foreach(libexec/"bin") do |f|
+      next if f == "." || f == ".." || !File.extname(f).empty?
+
+      new_link = f
+      if new_link =~ /^elasticsearch(.*)/
+        new_link = "elasticsearch6#{$1}"
+      end
+      bin.install_symlink { 
+        "#{libexec/"bin"/f}" => "#{libexec/"bin"/new_link}"
+      }
+      dst = libexec/"bin"
+      dst.install(new_link)
+      new_file = dst.join(new_link.basename)
+      new_link.write_env_script(new_file, Language::Java.java_home_env("1.8"))
+    end
+
   end
 
   def post_install
