@@ -62,7 +62,7 @@ class ElasticsearchAT6Gordolio < Formula
       bin.install_symlink(symlink)
 
       dst = libexec/"bin"
-      dst.install(new_link)
+      dst.install(libexec/"bin"/new_link)
       new_file = dst.join(new_link.basename)
       new_link.write_env_script(new_file, Language::Java.java_home_env("1.8"))
     end
