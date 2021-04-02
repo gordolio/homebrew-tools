@@ -56,9 +56,11 @@ class ElasticsearchAT6Gordolio < Formula
       if new_link =~ /^elasticsearch(.*)/
         new_link = "elasticsearch6#{$1}"
       end
-      bin.install_symlink { 
-        "#{libexec/"bin"/f}" => "#{libexec/"bin"/new_link}"
-      }
+      symlink = Hash.new
+      symlink[(libexec/"bin"/f)] = libexec/"bin"/new_link
+
+      bin.install_symlink(symlink)
+
       dst = libexec/"bin"
       dst.install(new_link)
       new_file = dst.join(new_link.basename)
