@@ -1,9 +1,9 @@
 class TimescaledbAT12 < Formula
   desc "An open-source time-series database optimized for fast ingest and complex queries. Fully compatible with PostgreSQL."
   homepage "https://www.timescaledb.com"
-  url "https://github.com/timescale/timescaledb/archive/refs/tags/2.5.0.tar.gz"
-  sha256 "9d67fe70aa01cea5feceb084adc01eca8a082d847f917e68e073ab67e497af76"
-  version "2.5.0"
+  url "https://github.com/timescale/timescaledb/archive/refs/tags/2.5.1.tar.gz"
+  sha256 "58a34a7a3a571339a019c0ae999b4ebb9f93e1e0cb828501e32bb073e0a25eac"
+  version "2.5.1"
   env :std
 
   depends_on "cmake" => :build
@@ -20,10 +20,20 @@ class TimescaledbAT12 < Formula
       ossvar = " -DAPACHE_ONLY=1"
     end
     ssldir = `#{(HOMEBREW_PREFIX/"bin"/"brew")} --prefix openssl`.chomp()
-    system "/bin/bash ./bootstrap -DREGRESS_CHECKS=OFF -DTAP_CHECKS=OFF -DWARNINGS_AS_ERRORS=OFF -DLINTER=OFF -DPROJECT_INSTALL_METHOD=\"brew\"#{ossvar} -DOPENSSL_ROOT_DIR=\"#{ssldir}\""
+    postgresql_path = `#{(HOMEBREW_PREFIX/"bin"/"brew")} --prefix postgresql@12`.chomp()
+    system "/bin/bash ./bootstrap " +
+      "-DPG_CONFIG=#{postgresql_path}/bin/pg_config " +
+      "-DREGRESS_CHECKS=OFF " +
+      "-DOPENSSL_ROOT_DIR=\"#{ssldir}\" " +
+      "-DCMAKE_BUILD_TYPE=Release " +
+      "-DPG_INCLUDEDIR_SERVER=#{postgresql_path}/include/postgresql/server " +
+      "-DPROJECT_INSTALL_METHOD=\"brew\"#{ossvar} " +
+      "-DLINTER=OFF " +
+      #"-DTAP_CHECKS=OFF " +
+      #"-DWARNINGS_AS_ERRORS=OFF " +
+      ""
     system "make -C build"
     system "make -C build install DESTDIR=#{buildpath}/stage"
-    postgresql_path = `#{(HOMEBREW_PREFIX/"bin"/"brew")} --prefix postgresql@12`.chomp()
     libdir = `#{postgresql_path}/bin/pg_config --pkglibdir`.chomp()
     sharedir = `#{postgresql_path}/bin/pg_config --sharedir`.chomp()
     `touch timescaledb_move.sh`
@@ -61,4 +71,5 @@ class TimescaledbAT12 < Formula
     s
   end
 end
+
 
